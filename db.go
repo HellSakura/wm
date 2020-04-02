@@ -11,7 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// 任务
+// Task 任务
 type Task struct {
 	gorm.Model
 	Name        string
@@ -60,7 +60,7 @@ func addTask(ctx *gin.Context) {
 func getTask(ctx *gin.Context) {
 	task := Task{}
 	now := time.Now().Unix()
-	db.Where("finished=false and (get=false or (? - get_time > 10))", now).Take(&task)
+	db.Where("finished=false and (get=false or (? - get_time > 45))", now).Take(&task)
 	if task.ID == 0 {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -83,45 +83,42 @@ func finishTask(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	task := Task{}
-	db.Where("link = ?", param.Link).First(&task)
-	if task.ID == 0 {
-		ctx.AbortWithStatus(http.StatusNotFound)
-		return
+	tasks := []Task{}
+	db.Where("link = ?", param.Link).Find(&tasks)
+	for _, task := range tasks {
+		if err := os.MkdirAll(downloadPath+task.Name, os.ModePerm); err != nil {
+			fmt.Println(err.Error())
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		file, err := os.Create(downloadPath + task.Name + "/" + task.ChapterName + ".m3u8")
+		if err != nil {
+			fmt.Println(err.Error())
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		defer file.Close()
+
+		_, err = file.WriteString(param.Content)
+		if err != nil {
+			fmt.Println(err.Error())
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		task.Finished = true
+		if err := db.Model(&task).Updates(&task).Error; err != nil {
+			fmt.Println(err.Error())
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		var finished, count int
+		db.Model(&Task{}).Where("finished=true").Count(&finished)
+		db.Model(&Task{}).Count(&count)
+
+		fmt.Println(task.str() + "已完成" + fmt.Sprintf("  (%d/%d)", finished, count))
 	}
-
-	if err := os.MkdirAll(downloadPath+task.Name, os.ModePerm); err != nil {
-		fmt.Println(err.Error())
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	file, err := os.Create(downloadPath + task.Name + "/" + task.ChapterName + ".m3u8")
-	if err != nil {
-		fmt.Println(err.Error())
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(param.Content)
-	if err != nil {
-		fmt.Println(err.Error())
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	task.Finished = true
-	if err := db.Model(&task).Updates(&task).Error; err != nil {
-		fmt.Println(err.Error())
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	var finished, count int
-	db.Model(&Task{}).Where("finished=true").Count(&finished)
-	db.Model(&Task{}).Count(&count)
-
-	fmt.Println(task.str() + "已完成" + fmt.Sprintf("  (%d/%d)", finished, count))
 	ctx.AbortWithStatus(http.StatusOK)
 }
