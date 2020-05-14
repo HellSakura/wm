@@ -29,6 +29,10 @@ go build .
 
 https://media.wanmen.org/
 
+请求头填入
+```
+User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72
+```
 点击 Go 开始下载。
 
 ### TIP
