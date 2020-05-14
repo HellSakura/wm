@@ -2,13 +2,11 @@
 
 ## 使用步骤
 
-### 编译
+### 下载
 
-在任意操作系统安装 Go 后执行
-``` shell
-go build .
-```
-得到可执行文件。[Release](https://github.com/cildhdi/wm/releases) 中提供 Windows 平台可执行文件的下载。
+[Release](https://github.com/cildhdi/wm/releases) 中提供 Windows 平台可执行文件的下载。
+
+> 也可以自行编译，在任意操作系统安装 Go 后执行 ``` go build . ``` 得到可执行文件。
 
 ### 安装
 
