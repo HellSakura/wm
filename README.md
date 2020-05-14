@@ -27,9 +27,9 @@
 
 https://media.wanmen.org/
 
-请求头填入
+访问浏览器版本页面，Edge地址：`edge://version/` , Chrome地址是 `chrome://version/`，复制其中的 用户代理 字段的值。在下载器的请求头中填入
 ```
-User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72
+User-Agent:用户代理的值
 ```
 点击 Go 开始下载。
 
