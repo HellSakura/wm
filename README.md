@@ -1,5 +1,7 @@
 # 万门大学课程视频批量下载
 
+只能批量下载免费的或者已经购买的课程，需要配合本地客户端使用。
+
 ## 使用步骤
 
 ### 下载
@@ -25,11 +27,14 @@
 #### 下载视频
 使用 [m3u8批量下载](https://nilaoda.github.io/N_m3u8DL-CLI/SimpleGUI.html) 工具，将 download 文件夹内的课程名文件夹拖放到下载工具的M3U8地址文本框，BASEURL填入
 
-https://media.wanmen.org/
-
-访问浏览器版本页面，Edge地址：`edge://version/` , Chrome地址是 `chrome://version/`，复制其中的 用户代理 字段的值。在下载器的请求头中填入
 ```
-User-Agent:用户代理的值
+https://media.wanmen.org/
+```
+
+在下载器的请求头中填入
+
+```
+Referer:https://www.wanmen.org/courses/
 ```
 点击 Go 开始下载。
 

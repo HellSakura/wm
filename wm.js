@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Wanmen
+// @name         万门大学课程视频批量下载
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  download wm
+// @version      0.2
+// @description  只能批量下载免费的或者已经购买的课程
 // @author       cildhdi
 // @match        https://www.wanmen.org/courses/*
 // @grant        none
