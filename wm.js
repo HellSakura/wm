@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         万门大学课程视频批量下载
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  只能批量下载免费的或者已经购买的课程
 // @author       cildhdi
 // @match        https://www.wanmen.org/courses/*
@@ -70,21 +70,27 @@ let addTask = async () => {
             throw new Error(addResponse.statusText);
         }
     } catch (error) {
-        alert('添加失败，请检查客户端是否开启');
+        alert('已将任务发送到客户端，处理中...');
     }
 }
 
-let getSource = () => {
-    return document.querySelector('#root > div.course__course-page--3J8Sy > div.course__video-row--20SaE > div:nth-child(1) > div.course__player-container--1S_cH > div > div.VideoWrapper__video-wrapper--3FBpC > video > source');
+let getSource = async () => {
+    let src = document.querySelector('#root > div.course__course-page--3J8Sy > div.course__video-row--20SaE > div:nth-child(1) > div.course__player-container--1S_cH > div > div.VideoWrapper__video-wrapper--3FBpC > video > source');
+    if (src) {
+        let m3u8 = src.getAttribute('src');
+        if (m3u8) {
+            return m3u8;
+        }
+    }
 }
 
 let finishTask = async () => {
-    while (!getSource()) {
+    while (!(await getSource())) {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    let source = getSource();
+    let source = await getSource();
     try {
-        let m3u8Response = await fetch(source.getAttribute('src'), {
+        let m3u8Response = await fetch(source, {
             method: 'get'
         });
         let m3u8Content = await m3u8Response.text();
@@ -117,7 +123,34 @@ let getTask = async () => {
             } else {
                 let link = await taskResponse.text();
                 if (link) {
-                    window.location.href = link;
+                    let cptEles = getCptEles();
+                    for (let cptEle = cptEles.firstElementChild, cptIdx = 1; cptEle != undefined; cptEle = cptEle.nextElementSibling, cptIdx++) {
+                        let subCptTitle = cptEle.querySelector('div');
+                        if (subCptTitle && subCptTitle.getAttribute('class').indexOf('presentation') < 0) {
+                            subCptTitle.click();
+                        } else {
+                            continue;
+                        }
+                        let subCpts = undefined, waitTime = 0;
+                        while (!(subCpts = cptEle.querySelector('ul'))) {
+                            const wait = 10;
+                            await new Promise((resolve) => setTimeout(resolve, wait));
+                            waitTime += wait;
+                            if (waitTime >= 100) {
+                                subCptTitle.click();
+                                waitTime = 0;
+                            }
+                        }
+                        for (let subCptEle = subCpts.firstElementChild, subCptIdx = 1; subCptEle != undefined; subCptEle = subCptEle.nextElementSibling, subCptIdx++) {
+                            let cptA = subCptEle.querySelector('a');
+                            if (cptA && link.indexOf(cptA.getAttribute('href')) >= 0) {
+                                cptA.click();
+                                await new Promise((resolve) => setTimeout(resolve, 2000));
+                                await finishTask();
+                            }
+                        }
+                        subCptTitle.click();
+                    }
                 }
             }
         } catch (error) {
