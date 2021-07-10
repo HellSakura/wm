@@ -39,7 +39,7 @@ Referer:https://www.wanmen.org/courses/
 ```
 点击 Go 开始下载。
 
-![image](images/m3u8.png)
+![image](https://raw.githubusercontent.com/HellSakura/wm/master/images/m3u8.PNG)
 
 ### TIP
 - 反馈请走[这里](https://github.com/HellSakura/wm/issues)提交 issue
