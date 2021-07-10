@@ -14,6 +14,7 @@
 
 - 浏览器安装 Tampermonkey 插件
 - Tampermonkey 添加脚本，贴入 `dist/index.js` 的内容
+- 或者在greasyfork安装 [直达](https://greasyfork.org/zh-CN/scripts/423408-%E4%B8%87%E9%97%A8%E5%A4%A7%E5%AD%A6%E8%AF%BE%E7%A8%8B%E8%A7%86%E9%A2%91%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD)
 
 ### 运行
 
@@ -38,8 +39,11 @@ Referer:https://www.wanmen.org/courses/
 ```
 点击 Go 开始下载。
 
+![image](https://github.com/HellSakura/wm/images/m3u8.png)
+
 ### TIP
 - 反馈请走[这里](https://github.com/HellSakura/wm/issues)提交 issue
 - 有关标签页的数量，一个标签页刷新一次即获取到一个视频链接，理论上打开越多获取越快，但刷新速度受网速以及设备性能的限制，请根据实际情况自行调整打开数量。
 - wm同级目录下的 wm.db 保存了课程任务信息，在退出后再次进入分发任务模式，可以自动开始上次未完成的任务。
 - 课程播放页面的布局可能发生变化，具体表现为模式1下无法添加课程，模式2下页面不会自动刷新，可以直接提交 issue (其他问题也可以)。
+- m3u8批量下载工具 [Release](https://github.com/nilaoda/N_m3u8DL-CLI/releases) 地址
